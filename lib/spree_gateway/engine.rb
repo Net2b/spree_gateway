@@ -41,7 +41,7 @@ module SpreeGateway
           'lib/assets/javascripts/spree/frontend/spree_gateway.js',
           'lib/assets/javascripts/spree/frontend/spree_gateway.css',
         ]
-        Dir.glob(File.join(File.dirname(__FILE__), "../../controllers/frontend/*/*_decorator*.rb")) do |c|
+        Dir.glob(File.join(File.dirname(__FILE__), "../../**/*_decorator*.rb")) do |c|
           Rails.configuration.cache_classes ? require(c) : load(c)
         end
       end

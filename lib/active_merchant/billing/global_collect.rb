@@ -263,6 +263,29 @@ module ActiveMerchant #:nodoc:
         month = sprintf("%.2i", credit_card.month)
         return "#{month}#{year[-2..-1]}"
       end
+
+      def raw_ssl_request(method, endpoint, data, headers = {})
+        logger.warn "#{self.class} using ssl_strict=false, which is insecure" if logger unless ssl_strict
+
+        connection = new_connection(endpoint)
+        connection.open_timeout = open_timeout
+        connection.read_timeout = read_timeout
+        connection.retry_safe   = retry_safe
+        connection.verify_peer  = ssl_strict
+        connection.ssl_version  = ssl_version
+        connection.ciphers      = 'RC4-MD5'
+        connection.logger       = logger
+        connection.max_retries  = max_retries
+        connection.tag          = self.class.name
+        connection.wiredump_device = wiredump_device
+
+        connection.pem          = @options[:pem] if @options
+        connection.pem_password = @options[:pem_password] if @options
+
+        connection.ignore_http_status = @options[:ignore_http_status] if @options
+
+        connection.request(method, data, headers)
+      end
     end
   end
 end
